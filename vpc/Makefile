@@ -19,3 +19,4 @@ dev-destroy:	clean ## Install Frontend Component
 prod-destroy:	clean ## Install Frontend Component
 	@terraform init -backend-config=environments/prod-backend.tfvars -no-color
 	@terraform destroy -auto-approve -var-file=environments/prod.tfvars -no-color
+
