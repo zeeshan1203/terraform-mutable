@@ -1,53 +1,30 @@
-resource "aws_route_table" "private-rt" {
-  vpc_id          = aws_vpc.main.id
+resource "aws_vpc" "main" {
+  cidr_block                  = var.VPC_CIDR
+  instance_tenancy            = "default"
 
-  route {
-    vpc_peering_connection_id     = aws_vpc_peering_connection.peer-connection.id
-    cidr_block                    = var.DEFAULT_VPC_CIDR
-  }
-
-  route {
-    cidr_block                    = "0.0.0.0/0"
-    nat_gateway_id                = aws_nat_gateway.nat.id
-  }
-
-  tags            = {
-    Name          = "private-route-table"
+  tags = {
+    Name                      = var.ENV
   }
 }
 
-resource "aws_route_table" "public-rt" {
-  vpc_id          = aws_vpc.main.id
-
-  route {
-    vpc_peering_connection_id     = aws_vpc_peering_connection.peer-connection.id
-    cidr_block                    = var.DEFAULT_VPC_CIDR
-  }
-
-  route {
-    cidr_block                    = "0.0.0.0/0"
-    gateway_id                    = aws_internet_gateway.igw.id
-  }
-
-  tags            = {
-    Name          = "public-route-table"
-  }
-}
-
-resource "aws_route" "route-in-default-vpc" {
-  route_table_id            = var.DEFAULT_VPC_ROUTE_TABLE
-  destination_cidr_block    = var.VPC_CIDR
-  vpc_peering_connection_id = aws_vpc_peering_connection.peer-connection.id
-}
-
-resource "aws_route_table_association" "public-association" {
+resource "aws_subnet" "public" {
   count                       = length(var.SUBNET_ZONES)
-  subnet_id                   = element(aws_subnet.public.*.id,count.index)
-  route_table_id              = aws_route_table.public-rt.id
+  vpc_id                      = aws_vpc.main.id
+  cidr_block                  = element(var.PUBLIC_SUBNETS_CIDR, count.index)
+  availability_zone           = element(var.SUBNET_ZONES, count.index)
+
+  tags = {
+    Name                      = "public-subnet-${count.index + 1}"
+  }
 }
 
-resource "aws_route_table_association" "private-association" {
+resource "aws_subnet" "private" {
   count                       = length(var.SUBNET_ZONES)
-  subnet_id                   = element(aws_subnet.private.*.id,count.index)
-  route_table_id              = aws_route_table.private-rt.id
+  vpc_id                      = aws_vpc.main.id
+  cidr_block                  = element(var.PRIVATE_SUBNETS_CIDR, count.index)
+  availability_zone           = element(var.SUBNET_ZONES, count.index)
+
+  tags = {
+    Name                      = "private-subnet-${count.index + 1}"
+  }
 }
