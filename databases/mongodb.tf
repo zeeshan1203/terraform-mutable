@@ -44,3 +44,17 @@ resource "aws_security_group" "allow_mongodb" {
     Name                      = "AllowMongoDB"
   }
 }
+
+//
+//resource "null_resource" "ansible-mongo" {
+//  provisioner "local-exec" {
+//    command                   = "sleep 30"
+//  }
+//
+//  provisioner "remote-exec" {
+//    connection {
+//      host                    = aws_spot_instance_request.mongodb.private_ip
+//      user                    =
+//    }
+//  }
+//}
