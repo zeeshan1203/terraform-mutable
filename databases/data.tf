@@ -23,7 +23,7 @@ data "aws_secretsmanager_secret_version" "secrets" {
 }
 
 output "secrets" {
-  sensitive = true
-  value = data.aws_secretsmanager_secret_version.secrets
+  value = base64encode(data.aws_secretsmanager_secret_version.secrets)
 }
+
 
