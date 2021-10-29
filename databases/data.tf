@@ -23,8 +23,9 @@ data "aws_secretsmanager_secret_version" "secrets" {
 }
 
 output "secrets" {
-  value = base64encode(data.aws_secretsmanager_secret_version.secrets.secret_string["SSH_USER"])
+  value = base64encode(jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_USER"])
 }
+
 
 
 
