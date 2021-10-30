@@ -43,8 +43,9 @@ resource "aws_route" "route-in-default-vpc" {
 }
 
 resource "null_resource" "wait" {
+  depends_on                      = [aws_route_table.private-rt, aws_route_table.public-rt]
   provisioner "local-exec" {
-    command = "sleep 15"
+    command                       = "sleep 15"
   }
 }
 
