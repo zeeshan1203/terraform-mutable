@@ -12,7 +12,7 @@ resource "aws_mq_broker" "example" {
 
   user {
     username                            = "roboshop"
-    password                            = "roboshop123"
+    password                            = "roboshop1234"
   }
 }
 
