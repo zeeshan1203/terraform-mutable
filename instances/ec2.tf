@@ -55,12 +55,16 @@ resource "null_resource" "wait" {
   }
 }
 
+locals {
+  IP  = aws_spot_instance_request.instances.*.private_ip
+}
+
 resource "null_resource" "ansible-apply" {
   count                       = var.INSTANCE_COUNT
   depends_on                  = [null_resource.wait]
   provisioner "remote-exec" {
     connection {
-      host                    = element(aws_spot_instance_request.instances.*.private_ip, count.index)
+      host                    = element(local.IP, count.index)
       user                    = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_USER"]
       password                = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_PASS"]
     }
