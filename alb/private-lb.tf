@@ -35,3 +35,19 @@ resource "aws_security_group" "allow_privat_lb" {
     Name                      = "AllowPrivateLB"
   }
 }
+
+resource "aws_lb_listener" "common" {
+  load_balancer_arn           = aws_lb.private.arn
+  port                        = "80"
+  protocol                    = "HTTP"
+
+  default_action {
+    type                      = "fixed-response"
+
+    fixed_response {
+      content_type            = "text/plain"
+      message_body            = "OK"
+      status_code             = "200"
+    }
+  }
+}

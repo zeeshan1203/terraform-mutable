@@ -13,3 +13,7 @@ output "PRIVATE_LB_DNSNAME" {
 output "PUBLIC_LB_DNSNAME" {
   value = aws_lb.public.dns_name
 }
+
+output "PRIVATE_LB_LISTENER_ARN" {
+  value = aws_lb_listener.common.arn
+}
