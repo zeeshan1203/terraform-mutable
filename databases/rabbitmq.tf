@@ -1,4 +1,4 @@
-resource "aws_mq_broker" "example" {
+resource "aws_mq_broker" "rabbitmq" {
   broker_name                           = "rabbitmq-${var.ENV}"
   deployment_mode                       = "SINGLE_INSTANCE"
 
