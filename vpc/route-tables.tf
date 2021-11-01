@@ -2,15 +2,15 @@ resource "aws_route_table" "private-rt" {
   depends_on                      = [aws_subnet.private, aws_vpc_peering_connection.peer-connection, aws_nat_gateway.nat]
   vpc_id                          = aws_vpc.main.id
 
-  //  route {
-  //    vpc_peering_connection_id     = aws_vpc_peering_connection.peer-connection.id
-  //    cidr_block                    = var.DEFAULT_VPC_CIDR
-  //  }
-  //
-  //  route {
-  //    cidr_block                    = "0.0.0.0/0"
-  //    nat_gateway_id                = aws_nat_gateway.nat.id
-  //  }
+    route {
+      vpc_peering_connection_id     = aws_vpc_peering_connection.peer-connection.id
+      cidr_block                    = var.DEFAULT_VPC_CIDR
+    }
+
+    route {
+      cidr_block                    = "0.0.0.0/0"
+      nat_gateway_id                = aws_nat_gateway.nat.id
+    }
 
   tags                            = {
     Name                          = "private-route-table"
@@ -49,15 +49,15 @@ resource "aws_route_table" "public-rt" {
   depends_on                      = [aws_subnet.public, aws_vpc_peering_connection.peer-connection, aws_internet_gateway.igw]
   vpc_id                          = aws_vpc.main.id
 
-  //  route {
-  //    vpc_peering_connection_id     = aws_vpc_peering_connection.peer-connection.id
-  //    cidr_block                    = var.DEFAULT_VPC_CIDR
-  //  }
-  //
-  //  route {
-  //    cidr_block                    = "0.0.0.0/0"
-  //    gateway_id                    = aws_internet_gateway.igw.id
-  //  }
+    route {
+      vpc_peering_connection_id     = aws_vpc_peering_connection.peer-connection.id
+      cidr_block                    = var.DEFAULT_VPC_CIDR
+    }
+
+    route {
+      cidr_block                    = "0.0.0.0/0"
+      gateway_id                    = aws_internet_gateway.igw.id
+    }
 
   tags                            = {
     Name                          = "public-route-table"
