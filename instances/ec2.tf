@@ -5,6 +5,7 @@ resource "aws_spot_instance_request" "instances" {
   instance_type               = var.INSTANCE_TYPE
   vpc_security_group_ids      = [aws_security_group.allow_ec2.id]
   subnet_id                   = element(data.terraform_remote_state.vpc.outputs.PRIVATE_SUBNETS, count.index)
+  wait_for_fulfillment        = true
 
   tags                        = {
     Name                      = "${var.COMPONENT}-${var.ENV}"
@@ -46,25 +47,11 @@ resource "aws_security_group" "allow_ec2" {
   }
 }
 
-resource "null_resource" "wait" {
-  triggers                    = {
-    abc                       = timestamp()
-  }
-  provisioner "local-exec" {
-    command                   = "sleep 60"
-  }
-}
-
-locals {
-  IP  = aws_spot_instance_request.instances.*.private_ip
-}
-
 resource "null_resource" "ansible-apply" {
   count                       = var.INSTANCE_COUNT
-  depends_on                  = [null_resource.wait]
   provisioner "remote-exec" {
     connection {
-      host                    = element(local.IP, count.index)
+      host                    = element(aws_spot_instance_request.instances.*.private_ip, count.index)
       user                    = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_USER"]
       password                = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_PASS"]
     }
