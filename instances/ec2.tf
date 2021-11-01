@@ -72,16 +72,41 @@ resource "null_resource" "ansible-apply" {
 }
 
 resource "aws_lb_target_group" "target-group" {
-  name                       = "${var.COMPONENT}-${var.ENV}"
-  port                       = var.PORT
-  protocol                   = "HTTP"
-  vpc_id                     = data.terraform_remote_state.vpc.outputs.VPC_ID
+  name                        = "${var.COMPONENT}-${var.ENV}"
+  port                        = var.PORT
+  protocol                    = "HTTP"
+  vpc_id                      = data.terraform_remote_state.vpc.outputs.VPC_ID
 }
 
 resource "aws_lb_target_group_attachment" "tg-attach" {
-  count                      = var.INSTANCE_COUNT
-  target_group_arn           = aws_lb_target_group.target-group.arn
-  target_id                  = element(aws_spot_instance_request.instances.*.spot_instance_id, count.index)
-  port                       = var.PORT
+  count                       = var.INSTANCE_COUNT
+  target_group_arn            = aws_lb_target_group.target-group.arn
+  target_id                   = element(aws_spot_instance_request.instances.*.spot_instance_id, count.index)
+  port                        = var.PORT
 }
+
+resource "aws_lb_listener_rule" "static" {
+  listener_arn                = var.LB_ARN
+  priority                    = var.LB_RULE_WEIGHT
+
+  action {
+    type                      = "forward"
+    target_group_arn          = aws_lb_target_group.target-group.arn
+  }
+
+  condition {
+    host_header {
+      values                  = ["${var.COMPONENT}-${var.ENV}.roboshop.internal"]
+    }
+  }
+}
+
+resource "aws_route53_record" "component-record" {
+  zone_id                     = data.terraform_remote_state.vpc.outputs.HOSTED_ZONE_ID
+  name                        = "${var.COMPONENT}-${var.ENV}.roboshop.internal"
+  type                        = "CNAME"
+  ttl                         = "300"
+  records                     = [var.LB_DNSNAME]
+}
+
 

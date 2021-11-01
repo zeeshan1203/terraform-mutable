@@ -29,3 +29,7 @@ output "DEFAULT_VPC_ID" {
 output "DEFAULT_VPC_CIDR" {
   value = var.DEFAULT_VPC_CIDR
 }
+
+output "HOSTED_ZONE_ID" {
+  value = var.HOSTED_ZONE_ID
+}
