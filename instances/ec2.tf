@@ -54,6 +54,30 @@ resource "aws_security_group" "allow_ec2" {
   }
 }
 
+#resource "null_resource" "ansible-apply" {
+#  count                       = var.INSTANCE_COUNT
+#  connection {
+#      host                    = element(aws_spot_instance_request.instances.*.private_ip, count.index)
+#      user                    = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_USER"]
+#      password                = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_PASS"]
+#    }
+#
+#  provisioner "remote-exec" {
+#      inline = [
+#        "sudo yum install python3-pip -y",
+#        "sudo pip3 install pip --upgrade",
+#        "sudo pip3 install ansible==4.1.0",
+#        "ansible-pull -i localhost, -U https://github.com/zeeshan1203/ansible.git roboshop-pull.yml -e COMPONENT=${var.COMPONENT}"
+#        #      "sudo yum install ansible -y",
+#        #      "sudo yum remove ansible -y",
+#        #      "sudo rm -rf /usr/lib/python2.7/site-packages/ansible*",
+#        #      "sudo pip install ansible",
+#        #      "ansible-pull -i localhost, -U https://DevOps-Batches@dev.azure.com/DevOps-Batches/DevOps56/_git/ansible roboshop-pull.yml -e COMPONENT=mongodb"
+#    ]
+#
+#  }
+#}
+
 resource "null_resource" "ansible-apply" {
   count                       = var.INSTANCE_COUNT
   provisioner "remote-exec" {
