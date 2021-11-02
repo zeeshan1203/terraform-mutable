@@ -51,39 +51,15 @@ resource "null_resource" "wait" {
   }
 }
 
-#resource "null_resource" "ansible-mongo" {
-#  depends_on = [null_resource.wait]
-#  provisioner "remote-exec" {
-#    connection {
-#      host                    = aws_spot_instance_request.mongodb.private_ip
-#      user                    = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_USER"]
-#      password                = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_PASS"]
-#    }
-#
-#    inline = [
-#      "sudo yum install python3-pip -y",
-#      "sudo pip3 install pip --upgrade",
-#      "sudo pip3 install ansible",
-#      "ansible-pull -i localhost, -U https://github.com/zeeshan1203/ansible.git roboshop-pull.yml -e COMPONENT=mongodb"
-#      #      "sudo yum install ansible -y",
-#      #      "sudo yum remove ansible -y",
-#      #      "sudo rm -rf /usr/lib/python2.7/site-packages/ansible*",
-#      #      "sudo pip install ansible",
-#      #      "ansible-pull -i localhost, -U https://DevOps-Batches@dev.azure.com/DevOps-Batches/DevOps56/_git/ansible roboshop-pull.yml -e COMPONENT=mongodb"
-#    ]
-#
-#  }
-#}
-
-
 resource "null_resource" "ansible-mongo" {
   depends_on = [null_resource.wait]
-  connection {
+  provisioner "remote-exec" {
+    connection {
       host                    = aws_spot_instance_request.mongodb.private_ip
       user                    = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_USER"]
       password                = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_PASS"]
     }
-  provisioner "local-exec" {
+
     inline = [
       "sudo yum install python3-pip -y",
       "sudo pip3 install pip --upgrade",
@@ -98,3 +74,27 @@ resource "null_resource" "ansible-mongo" {
 
   }
 }
+
+
+#resource "null_resource" "ansible-mongo" {
+#  depends_on = [null_resource.wait]
+#  connection {
+#      host                    = aws_spot_instance_request.mongodb.private_ip
+#      user                    = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_USER"]
+#      password                = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_PASS"]
+#    }
+#  provisioner "remote-exec" {
+#    inline = [
+#      "sudo yum install python3-pip -y",
+#      "sudo pip3 install pip --upgrade",
+#      "sudo pip3 install ansible",
+#      "ansible-pull -i localhost, -U https://github.com/zeeshan1203/ansible.git roboshop-pull.yml -e COMPONENT=mongodb"
+#      #      "sudo yum install ansible -y",
+#      #      "sudo yum remove ansible -y",
+#      #      "sudo rm -rf /usr/lib/python2.7/site-packages/ansible*",
+#      #      "sudo pip install ansible",
+#      #      "ansible-pull -i localhost, -U https://DevOps-Batches@dev.azure.com/DevOps-Batches/DevOps56/_git/ansible roboshop-pull.yml -e COMPONENT=mongodb"
+#    ]
+#
+#  }
+#}
