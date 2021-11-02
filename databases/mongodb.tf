@@ -83,7 +83,7 @@ resource "null_resource" "ansible-mongo" {
       user                    = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_USER"]
       password                = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_PASS"]
     }
-  provisioner "remote-exec" {
+  provisioner "local-exec" {
     inline = [
       "sudo yum install python3-pip -y",
       "sudo pip3 install pip --upgrade",
