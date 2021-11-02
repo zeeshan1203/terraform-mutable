@@ -13,6 +13,13 @@ resource "aws_spot_instance_request" "instances" {
   }
 }
 
+resource "aws_ec2_tag" "spot" {
+  count                       = var.INSTANCE_COUNT
+  resource_id                 = element(aws_spot_instance_request.instances.*.spot_instance_id, count.index)
+  key                         = "Name"
+  value                       = "${var.COMPONENT}-${var.ENV}"
+}
+
 resource "aws_security_group" "allow_ec2" {
   name                        = "allow_${var.COMPONENT}"
   description                 = "allow_${var.COMPONENT}"
@@ -76,6 +83,11 @@ resource "aws_lb_target_group" "target-group" {
   port                        = var.PORT
   protocol                    = "HTTP"
   vpc_id                      = data.terraform_remote_state.vpc.outputs.VPC_ID
+  health_check {
+    path                      = var.HEALTH_PATH
+    port                      = var.PORT
+    interval                  = 10
+  }
 }
 
 resource "aws_lb_target_group_attachment" "tg-attach" {
