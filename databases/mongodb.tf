@@ -13,7 +13,7 @@ resource "aws_spot_instance_request" "mongodb" {
 }
 
 resource "aws_ec2_tag" "mongo" {
-  resource_id                 = aws_spot_instance_request.mongodb.*.spot_instance_id
+  resource_id                 = aws_spot_instance_request.mongodb.spot_instance_id
   key                         = "Name"
   value                       = "mongodb-${var.ENV}"
 }
