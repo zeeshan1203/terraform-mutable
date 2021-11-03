@@ -17,3 +17,11 @@ output "PUBLIC_LB_DNSNAME" {
 output "PRIVATE_LB_LISTENER_ARN" {
   value = aws_lb_listener.common.arn
 }
+
+output "PUBLIC_LB_LISTENER_ARN" {
+  value = aws_lb_listener.frontend.arn
+}
+
+output "PUBLIC_LB_TARGET_GROUP_ARN" {
+  value = aws_lb_target_group.frontend-target-group.arn
+}
