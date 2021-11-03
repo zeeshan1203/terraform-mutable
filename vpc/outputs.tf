@@ -33,3 +33,4 @@ output "DEFAULT_VPC_CIDR" {
 output "HOSTED_ZONE_ID" {
   value = var.HOSTED_ZONE_ID
 }
+
