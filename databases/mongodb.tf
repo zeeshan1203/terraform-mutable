@@ -4,11 +4,18 @@ resource "aws_spot_instance_request" "mongodb" {
   instance_type               = "t3.micro"
   vpc_security_group_ids      = [aws_security_group.allow_mongodb.id]
   subnet_id                   = data.terraform_remote_state.vpc.outputs.PRIVATE_SUBNETS[1]
+  wait_for_fulfillment        = true
 
   tags                        = {
     Name                      = "mongodb-${var.ENV}"
     Environment               = var.ENV
   }
+}
+
+resource "aws_ec2_tag" "mongo" {
+  resource_id                 = aws_spot_instance_request.mongodb.*.spot_instance_id
+  key                         = "Name"
+  value                       = "mongodb-${var.ENV}"
 }
 
 resource "aws_security_group" "allow_mongodb" {
