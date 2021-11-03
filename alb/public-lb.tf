@@ -49,7 +49,7 @@ resource "aws_lb_target_group" "frontend-target-group" {
 }
 
 resource "aws_lb_listener" "frontend" {
-  load_balancer_arn           = aws_lb.private.arn
+  load_balancer_arn           = aws_lb.public.arn
   port                        = "80"
   protocol                    = "HTTP"
 
