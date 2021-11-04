@@ -67,12 +67,12 @@ resource "null_resource" "ansible-apply" {
       "sudo yum install python3-pip -y",
       "sudo pip3 install pip --upgrade",
       "sudo pip3 install ansible==4.1.0",
-      "ansible-pull -i localhost, -U https://github.com/zeeshan1203/ansible.git roboshop-pull.yml -e COMPONENT=${var.COMPONENT}"
+      "ansible-pull -i localhost, -U https://github.com/zeeshan1203/ansible.git roboshop-pull.yml -e ENV=${var.ENV} -e COMPONENT=${var.COMPONENT}"
       #      "sudo yum install ansible -y",
       #      "sudo yum remove ansible -y",
       #      "sudo rm -rf /usr/lib/python2.7/site-packages/ansible*",
       #      "sudo pip install ansible",
-      #      "ansible-pull -i localhost, -U https://DevOps-Batches@dev.azure.com/DevOps-Batches/DevOps56/_git/ansible roboshop-pull.yml -e COMPONENT=mongodb"
+      #      ""ansible-pull -i localhost, -U https://DevOps-Batches@dev.azure.com/DevOps-Batches/DevOps56/_git/ansible roboshop-pull.yml -e ENV=${var.ENV}  -e COMPONENT=${var.COMPONENT}"
     ]
 
   }
