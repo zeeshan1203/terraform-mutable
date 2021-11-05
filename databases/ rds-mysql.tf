@@ -55,7 +55,10 @@ resource "aws_security_group" "allow_rds_mysql" {
   }
 }
 
-output "rds" {
-  value = aws_db_instance.default.address
+resource "aws_route53_record" "mysql-record" {
+  zone_id                     = data.terraform_remote_state.vpc.outputs.HOSTED_ZONE_ID
+  name                        = "mysql-${var.ENV}.roboshop.internal"
+  type                        = "CNAME"
+  ttl                         = "300"
+  records                     = [aws_db_instance.default.address]
 }
-

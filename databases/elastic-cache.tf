@@ -54,8 +54,3 @@ resource "aws_route53_record" "elastic-record" {
   ttl                         = "300"
   records                     = [aws_elasticache_cluster.example.cache_nodes[0].address]
 }
-
-
-output "elastic" {
-  value = aws_elasticache_cluster.example
-}
