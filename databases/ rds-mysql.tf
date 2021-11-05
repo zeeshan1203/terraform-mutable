@@ -54,3 +54,7 @@ resource "aws_security_group" "allow_rds_mysql" {
     Environment                         = var.ENV
   }
 }
+
+output "rds" {
+  value = aws_db_instance.default
+}

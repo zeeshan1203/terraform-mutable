@@ -42,3 +42,7 @@ resource "aws_security_group" "allow_rabbitmq" {
     Environment                         = var.ENV
   }
 }
+
+output "rabbitmq" {
+  value = aws_mq_broker.rabbitmq
+}

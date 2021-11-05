@@ -46,3 +46,7 @@ resource "aws_security_group" "allow_elastic_redis" {
     Environment                         = var.ENV
   }
 }
+
+output "elastic" {
+  value = aws_elasticache_cluster.example
+}
