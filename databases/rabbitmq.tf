@@ -43,6 +43,15 @@ resource "aws_security_group" "allow_rabbitmq" {
   }
 }
 
+// "console_url" = "https://b-2b25c33c-b240-487f-afbf-bf86d69ac2ff.mq.us-east-1.amazonaws.com"
+resource "aws_route53_record" "rabbitmq-record" {
+  zone_id                     = data.terraform_remote_state.vpc.outputs.HOSTED_ZONE_ID
+  name                        = "rabbitmq-${var.ENV}.roboshop.internal"
+  type                        = "CNAME"
+  ttl                         = "300"
+  records                     = [element(split("/", aws_mq_broker.rabbitmq.instances[0].console_url), 2)]
+}
+
 output "rabbitmq" {
   value = aws_mq_broker.rabbitmq
 }
