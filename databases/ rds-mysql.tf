@@ -58,3 +58,4 @@ resource "aws_security_group" "allow_rds_mysql" {
 output "rds" {
   value = aws_db_instance.default.address
 }
+
