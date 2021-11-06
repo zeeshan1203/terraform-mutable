@@ -1,52 +1,83 @@
-resource "aws_mq_broker" "rabbitmq" {
-  broker_name                           = "rabbitmq-${var.ENV}"
-  deployment_mode                       = "SINGLE_INSTANCE"
+resource "aws_spot_instance_request" "rabbitmq" {
+  ami                         = data.aws_ami.centos7.id
+  spot_price                  = "0.0031"
+  instance_type               = "t3.micro"
+  vpc_security_group_ids      = [aws_security_group.allow_rabbitmq.id]
+  subnet_id                   = data.terraform_remote_state.vpc.outputs.PRIVATE_SUBNETS[1]
+  wait_for_fulfillment        = true
 
-
-  engine_type                           = "RabbitMQ"
-  engine_version                        = "3.8.11"
-  storage_type                          = "ebs"
-  host_instance_type                    = "mq.t3.micro"
-  security_groups                       = [aws_security_group.allow_rabbitmq.id]
-  subnet_ids                            = [data.terraform_remote_state.vpc.outputs.PRIVATE_SUBNETS[0]]
-
-  user {
-    username                            = "roboshop"
-    password                            = "roboshop1234"
+  tags                        = {
+    Name                      = "rabbitmq-${var.ENV}"
+    Environment               = var.ENV
   }
 }
 
+resource "aws_ec2_tag" "rabbitmq" {
+  resource_id                 = aws_spot_instance_request.rabbitmq.spot_instance_id
+  key                         = "Name"
+  value                       = "rabbitmq-${var.ENV}"
+}
+
 resource "aws_security_group" "allow_rabbitmq" {
-  name                                  = "allow_rabbitmq"
-  description                           = "AllowRabbitMQ"
-  vpc_id                                = data.terraform_remote_state.vpc.outputs.VPC_ID
+  name                        = "allow_rabbitmq"
+  description                 = "AllowRabbitMQ"
+  vpc_id                      = data.terraform_remote_state.vpc.outputs.VPC_ID
 
   ingress {
-    description                         = "RABBITMQ"
-    from_port                           = 5672
-    to_port                             = 5672
-    protocol                            = "tcp"
-    cidr_blocks                         = [data.terraform_remote_state.vpc.outputs.VPC_CIDR]
+    description               = "SSH"
+    from_port                 = 22
+    to_port                   = 22
+    protocol                  = "tcp"
+    cidr_blocks               = [data.terraform_remote_state.vpc.outputs.VPC_CIDR, data.terraform_remote_state.vpc.outputs.DEFAULT_VPC_CIDR]
+  }
+
+  ingress {
+    description               = "RABBITMQ"
+    from_port                 = 5672
+    to_port                   = 5672
+    protocol                  = "tcp"
+    cidr_blocks               = [data.terraform_remote_state.vpc.outputs.VPC_CIDR]
   }
 
   egress {
-    from_port                           = 0
-    to_port                             = 0
-    protocol                            = "-1"
-    cidr_blocks                         = ["0.0.0.0/0"]
-    ipv6_cidr_blocks                    = ["::/0"]
+    from_port                 = 0
+    to_port                   = 0
+    protocol                  = "-1"
+    cidr_blocks               = ["0.0.0.0/0"]
+    ipv6_cidr_blocks          = ["::/0"]
   }
 
-  tags                                  = {
-    Name                                = "AllowRabbitMQ"
-    Environment                         = var.ENV
+  tags                        = {
+    Name                      = "AllowRabbitMQ"
+  }
+}
+resource "null_resource" "ansible-rabbitmq" {
+  provisioner "remote-exec" {
+    connection {
+      host                    = aws_spot_instance_request.rabbitmq.private_ip
+      user                    = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_USER"]
+      password                = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["SSH_PASS"]
+    }
+
+    inline = [
+      "sudo yum install python3-pip -y",
+      "sudo pip3 install pip --upgrade",
+      "sudo pip3 install ansible==4.1.0",
+      "ansible-pull -i localhost, -U https://github.com/zeeshan1203/ansible.git roboshop-pull.yml -e ENV=${var.ENV} -e COMPONENT=${var.COMPONENT}"
+      #      "sudo yum install ansible -y",
+      #      "sudo yum remove ansible -y",
+      #      "sudo rm -rf /usr/lib/python2.7/site-packages/ansible*",
+      #      "sudo pip install ansible",
+      #      ""ansible-pull -i localhost, -U https://github.com/zeeshan1203/ansible.git roboshop-pull.yml -e ENV=dev -e COMPONENT=${var.COMPONENT}"
+    ]
+
   }
 }
 
 resource "aws_route53_record" "rabbitmq-record" {
   zone_id                     = data.terraform_remote_state.vpc.outputs.HOSTED_ZONE_ID
   name                        = "rabbitmq-${var.ENV}.roboshop.internal"
-  type                        = "CNAME"
+  type                        = "A"
   ttl                         = "300"
-  records                     = [element(split("/", aws_mq_broker.rabbitmq.instances[0].console_url), 2)]
+  records                     = [aws_spot_instance_request.rabbitmq.private_ip]
 }
