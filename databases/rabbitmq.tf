@@ -22,7 +22,7 @@ resource "aws_security_group" "allow_rabbitmq" {
   vpc_id                                = data.terraform_remote_state.vpc.outputs.VPC_ID
 
   ingress {
-    description                         = "MYSQL"
+    description                         = "RABBITMQ"
     from_port                           = 5672
     to_port                             = 5672
     protocol                            = "tcp"
