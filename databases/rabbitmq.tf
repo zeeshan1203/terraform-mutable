@@ -63,7 +63,7 @@ resource "null_resource" "ansible-rabbitmq" {
       "sudo yum install python3-pip -y",
       "sudo pip3 install pip --upgrade",
       "sudo pip3 install ansible==4.1.0",
-      "ansible-pull -i localhost, -U https://github.com/zeeshan1203/ansible.git roboshop-pull.yml -e ENV=${var.ENV} -e COMPONENT=${var.COMPONENT}"
+      "ansible-pull -i localhost, -U https://github.com/zeeshan1203/ansible.git roboshop-pull.yml -e ENV=${var.ENV} -e COMPONENT=rabbitmq"
       #      "sudo yum install ansible -y",
       #      "sudo yum remove ansible -y",
       #      "sudo rm -rf /usr/lib/python2.7/site-packages/ansible*",
