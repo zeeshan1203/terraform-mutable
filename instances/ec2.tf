@@ -138,3 +138,4 @@ resource "aws_route53_record" "component-record" {
   ttl                         = "300"
   records                     = [var.LB_DNSNAME]
 }
+
