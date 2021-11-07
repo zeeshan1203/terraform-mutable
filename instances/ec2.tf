@@ -72,7 +72,7 @@ resource "aws_security_group" "allow_ec2" {
 resource "null_resource" "ansible-apply" {
   count                       = var.INSTANCE_COUNT
   triggers = {
-    private_ip                = aws_spot_instance_request.instances.*.private_ip
+    private_ip                = join(",",aws_spot_instance_request.instances.*.private_ip)
   }
   provisioner "remote-exec" {
     connection {
@@ -138,4 +138,3 @@ resource "aws_route53_record" "component-record" {
   ttl                         = "300"
   records                     = [var.LB_DNSNAME]
 }
-
