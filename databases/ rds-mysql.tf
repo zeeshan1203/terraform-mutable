@@ -56,11 +56,11 @@ resource "aws_security_group" "allow_rds_mysql" {
 }
 
 resource "aws_route53_record" "mysql-record" {
-  zone_id                     = data.terraform_remote_state.vpc.outputs.HOSTED_ZONE_ID
-  name                        = "mysql-${var.ENV}.roboshop.internal"
-  type                        = "CNAME"
-  ttl                         = "300"
-  records                     = [aws_db_instance.default.address]
+  zone_id                               = data.terraform_remote_state.vpc.outputs.HOSTED_ZONE_ID
+  name                                  = "mysql-${var.ENV}.roboshop.internal"
+  type                                  = "CNAME"
+  ttl                                   = "300"
+  records                               = [aws_db_instance.default.address]
 }
 
 resource "null_resource" "mysql-schema" {

@@ -1,7 +1,7 @@
 data "aws_ami" "centos7" {
-  most_recent      = true
-  name_regex       = "^Centos-7-DevOps-Practice"
-  owners           = ["973714476881"]
+  most_recent             = true
+  name_regex              = "^Centos-7-DevOps-Practice"
+  owners                  = ["973714476881"]            ##check the owners id of ami
 }
 
 data "terraform_remote_state" "vpc" {
