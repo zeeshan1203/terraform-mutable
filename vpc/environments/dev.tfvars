@@ -6,4 +6,4 @@ PUBLIC_SUBNETS_CIDR     = ["10.0.6.0/24", "10.0.7.0/24", "10.0.8.0/24", "10.0.9.
 DEFAULT_VPC_ID          = "vpc-a058d4dd"                 ##cross check once
 DEFAULT_VPC_ROUTE_TABLE = "rtb-1c8a8162"                 ##cross check once
 DEFAULT_VPC_CIDR        = "172.31.0.0/16"                ##cross check once
-HOSTED_ZONE_ID          = "Z0455275BOCGUWER4BVO"         ##ur route53 hosted zone id
+HOSTED_ZONE_ID          = "Z066850733D6NJMSTTFJ4"        ##ur route53 hosted zone id
