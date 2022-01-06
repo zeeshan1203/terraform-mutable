@@ -27,6 +27,13 @@ resource "aws_ec2_tag" "monitor" {
   value                       = "yes"
 }
 
+resource "aws_ec2_tag" "env" {
+  count                       = var.INSTANCE_COUNT
+  resource_id                 = element(aws_spot_instance_request.instances.*.spot_instance_id, count.index)
+  key                         = "Environment"
+  value                       = var.ENV
+}
+
 resource "aws_security_group" "allow_ec2" {
   name                        = "allow_${var.COMPONENT}"
   description                 = "allow_${var.COMPONENT}"
