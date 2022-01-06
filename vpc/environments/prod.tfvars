@@ -1,2 +1,9 @@
-VPC_CIDR       = "10.255.0.0/16"
-ENV            = "prod"
+VPC_CIDR                = "10.1.0.0/16"
+ENV                     = "prod"
+SUBNET_ZONES            = [ "us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d", "us-east-1e", "us-east-1f" ]
+PRIVATE_SUBNETS_CIDR    = ["10.1.0.0/24", "10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24", "10.1.4.0/24", "10.1.5.0/24"]
+PUBLIC_SUBNETS_CIDR     = ["10.1.6.0/24", "10.1.7.0/24", "10.1.8.0/24", "10.1.9.0/24", "10.1.10.0/24", "10.1.11.0/24"]
+DEFAULT_VPC_ID          = "vpc-a058d4dd"                 ##cross check once
+DEFAULT_VPC_ROUTE_TABLE = "rtb-1c8a8162"                 ##cross check once
+DEFAULT_VPC_CIDR        = "172.31.0.0/16"                ##cross check once
+HOSTED_ZONE_ID          = "Z066850733D6NJMSTTFJ4"        ##ur route53 hosted zone id
